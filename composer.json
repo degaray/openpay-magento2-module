@@ -1,9 +1,8 @@
 {
-  "name": "degaray/openpay",
-  "description": "A module to use OpenPay, a payment gateway in Mexico",
+  "name": "magento/openpay-magento2-module",
+  "description": "A minimal skeleton Magento 2 module",
   "type": "magento2-module",
-  "minimum-stability": "dev",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": [
     "OSL-3.0",
     "AFL-3.0"
@@ -16,7 +15,7 @@
     "map": [
       [
         "*",
-        "degaray/openpay"
+        "Degaray/Openpay"
       ]
     ]
   }
