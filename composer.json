@@ -1,5 +1,5 @@
 {
-  "name": "magento/openpay-magento2-module",
+  "name": "degaray/openpay-magento2-module",
   "description": "A minimal skeleton Magento 2 module",
   "type": "magento2-module",
   "license": [
