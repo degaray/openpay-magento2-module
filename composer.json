@@ -2,7 +2,8 @@
   "name": "degaray/openpay",
   "description": "A module to use OpenPay, a payment gateway in Mexico",
   "type": "magento2-module",
-  "version": "1.0.0",
+  "minimum-stability": "dev",
+  "version": "0.1.0",
   "license": [
     "OSL-3.0",
     "AFL-3.0"
