@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "28184befc3ec6e1762b5fed8241417d4",
-    "content-hash": "a45ae01e23eac859181828a43416ecce",
+    "hash": "26f6daa3fdae7663fcbafffd705b4a56",
+    "content-hash": "18185bbc5f6b491d8b9d66d97f1173c9",
     "packages": [
         {
             "name": "magento/magento-composer-installer",
@@ -90,8 +90,6 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": {
-        "php": "~5.5.0|~5.6.0"
-    },
+    "platform": [],
     "platform-dev": []
 }

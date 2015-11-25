@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Xavier de Garay. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config>
+    <module name="Degaray_Openpay" setup_version="0.1.0">
+        <!--<sequence>
+            <module name="Magento_Customer"/>
+            <module name="Magento_Checkout"/>
+        </sequence>-->
+    </module>
+</config>

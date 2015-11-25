@@ -1,5 +1,5 @@
 {
-  "name": "degaray/openpay-magento2-module",
+  "name": "degaray/openpay",
   "description": "OpenPay module for Magento2, a payment gateway in Mexico",
   "require": {
     "magento/magento-composer-installer": "*"
@@ -13,5 +13,13 @@
         "Degaray/Openpay"
       ]
     ]
+  },
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Degaray\\Openpay\\": ""
+    }
   }
 }
