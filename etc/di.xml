@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Degaray\Openpay\Api\Data\CardInterface"
+                type="Degaray\Openpay\Model\Data\Card" />
+    <type name="Magento\Customer\Model\Customer">
+        <plugin name="degaray_openpay_populate_customer_cards"
+                type="Degaray\Openpay\Model\Plugin\Card\PopulateCustomerCards"
+        />
+    </type>
+</config>

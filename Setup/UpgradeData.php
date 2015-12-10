@@ -9,15 +9,25 @@
 namespace Degaray\Openpay\Setup;
 
 use Magento\Customer\Model\Customer;
+use Magento\Customer\Model\Address;
 use Magento\Customer\Setup\CustomerSetup;
 use Magento\Customer\Setup\CustomerSetupFactory;
-use Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\UpgradeDataInterface;
 
 class UpgradeData implements UpgradeDataInterface
 {
+    /**
+     * From database table eav_entity_type
+     */
+    const CUSTOMER_EAV_ENTITY_TYPE = 'customer';
+
+    /**
+     * From database table eav_entity_type
+     */
+    const CUSTOMER_ADDRESS_EAV_ENTITY_TYPE = 'customer_address';
+
     /**
      * @var CustomerSetupFactory
      */
@@ -41,9 +51,9 @@ class UpgradeData implements UpgradeDataInterface
 
         if (version_compare($dbVersion, '0.1.0', '<')) {
             /** @var CustomerSetup $customerSetup */
-            $customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
+            /*$customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
             $customerSetup->addAttribute(
-                Customer::ENTITY,
+                self::CUSTOMER_EAV_ENTITY_TYPE,
                 'openpay_customer_id',
                 [
                     'label' => 'Openpay Customer ID',
@@ -54,7 +64,25 @@ class UpgradeData implements UpgradeDataInterface
             );
             $customerSetup->getEavConfig()->getAttribute('customer', 'openpay_customer_id')
                 ->setData('used_in_forms', ['adminhtml_customer'])
-                ->save();
+                ->save();*/
+
+            $customerAddressSetup = $this->customerSetupFactory->create(['setup' => $setup]);
+            $customerAddressSetup->addAttribute(
+                self::CUSTOMER_ADDRESS_EAV_ENTITY_TYPE,
+                'openpay_cc_id',
+                [
+                    'type' => 'text',
+                    'label' => 'Openpay Credit Card ID',
+                    'required' => 0,
+                    'system' => 0,
+                    'position' => 100
+                ]
+            );
+            $customerAddressSetup->getEavConfig()->getAttribute(
+                self::CUSTOMER_ADDRESS_EAV_ENTITY_TYPE,
+                'openpay_cc_id'
+            )->setData('used_in_forms', ['adminhtml_customer_address'])
+            ->save();
         }
     }
 }
