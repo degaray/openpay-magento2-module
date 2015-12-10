@@ -45,9 +45,9 @@ class PopulateCustomerCards
     public function afterGetDataModel(Customer $customer, $customerDataObject)
     {
         $cardCollection = $this->cardCollectionFactory->create();
-        //$customerId = $customer->getId();
-        //$customerCards = $cardCollection->getCustomerCardsByCustomerId($customerId);
-        $extension = $this->customerExtensionFactory->create()->setOpenpayCard($cardCollection->getItems());
+        $customerId = $customer->getId();
+        $customerCards = $cardCollection->getCustomerCardsByCustomerId($customerId);
+        $extension = $this->customerExtensionFactory->create()->setOpenpayCard($customerCards);
         $customerDataObject->setExtensionAttributes($extension);
 
         return $customerDataObject;

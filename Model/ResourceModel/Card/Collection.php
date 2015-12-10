@@ -26,6 +26,11 @@ class Collection extends AbstractCollection
     const CARD_RESOURCE_MODEL_NAME = 'Degaray\Openpay\Model\ResourceModel\Card';
 
     /**
+     * Field name of customer_id in card_entity table
+     */
+    const CUSTOMER_ID_FIELD_NAME = 'customer_id';
+
+    /**
      * Resource initialization
      *
      * @return void
@@ -45,10 +50,12 @@ class Collection extends AbstractCollection
             $this->_logger->error('You must set the customer first');
         }
 
-        $this->getSelect()->from(
-            ['card_entity' => $this->getTable('card_entity')]
-        )->where('customer_id = 1');
+        $this->addFilter(self::CUSTOMER_ID_FIELD_NAME, $customerId);
+        $this->loadData();
 
-        return $this;
+        /** @var \Magento\Customer\Api\Data\CustomerInterface[] $items */
+        $items = $this->getItems();
+        
+        return $items;
     }
 }
