@@ -42,6 +42,11 @@ class PopulateCustomerCards
         $this->cardCollectionFactory = $cardCollectionFactory;
     }
 
+    /**
+     * @param Customer $customer
+     * @param $customerDataObject
+     * @return mixed
+     */
     public function afterGetDataModel(Customer $customer, $customerDataObject)
     {
         $cardCollection = $this->cardCollectionFactory->create();

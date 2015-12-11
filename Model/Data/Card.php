@@ -107,4 +107,22 @@ class Card extends AbstractModel implements CardInterface
         $this->setData(self::UPDATED_AT, $updated_at);
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getOpenpayToken()
+    {
+        return $this->getData(self::OPENPAY_TOKEN);
+    }
+
+    /**
+     * @param string $token
+     * @return $this
+     */
+    public function setOpenpayToken($token)
+    {
+        $this->setData(self::OPENPAY_TOKEN, $token);
+        return $this;
+    }
 }

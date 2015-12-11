@@ -2,6 +2,7 @@
 namespace Degaray\Openpay\Api\Data;
 
 use \Magento\Framework\Api\ExtensibleDataInterface;
+use \Magento\Framework\Stdlib\DateTime\DateTime;
 /**
  * Created by Xavier de Garay.
  * User: degaray
@@ -19,6 +20,7 @@ interface CardInterface extends ExtensibleDataInterface
     const ENTITY_ID = 'entity_id';
     const CUSTOMER_ID = 'customer_id';
     const OPENPAY_CARD_ID = 'openpay_card_id';
+    const OPENPAY_TOKEN = 'openpay_token';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -77,30 +79,41 @@ interface CardInterface extends ExtensibleDataInterface
     public function setOpenpayCardId($cardId);
 
     /**
-     * Set creation at datetime
-     * @return \DateTime
+     * Get creation at datetime
+     * @return DateTime
      */
     public function getCreatedAt();
 
     /**
      * Set creation time
      *
-     * @param \DateTime $created_at
-     * @return CardInterface
+     * @param DateTime $created_at
+     * @return $this
      */
     public function setCreatedAt($created_at);
 
     /**
-     * Set updated at datetime
-     * @return \DateTime
+     * Get updated at datetime
+     * @return DateTime
      */
     public function getUpdatedAt();
 
     /**
      * Set updated at time
      *
-     * @param \DateTime $updated_at
-     * @return CardInterface
+     * @param DateTime $updated_at
+     * @return $this
      */
     public function setUpdatedAt($updated_at);
+
+    /**
+     * @return string
+     */
+    public function getOpenpayToken();
+
+    /**
+     * @param string $token
+     * @return $this
+     */
+    public function setOpenpayToken($token);
 }

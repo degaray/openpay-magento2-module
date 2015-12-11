@@ -55,4 +55,5 @@ interface CardRepositoryInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function deleteById($cardId);
+
 }

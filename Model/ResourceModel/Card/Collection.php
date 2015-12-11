@@ -55,7 +55,7 @@ class Collection extends AbstractCollection
 
         /** @var \Magento\Customer\Api\Data\CustomerInterface[] $items */
         $items = $this->getItems();
-        
+
         return $items;
     }
 }
