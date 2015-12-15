@@ -18,7 +18,6 @@
   },
   "autoload": {
     "files": [
-      "vendor/openpay/sdk/Openpay.php",
       "registration.php"
     ],
     "psr-4": {
