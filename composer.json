@@ -3,7 +3,8 @@
   "description": "OpenPay module for Magento2, a payment gateway in Mexico",
   "require": {
     "php": "~5.5.0|~5.6.0",
-    "magento/magento-composer-installer": "*"
+    "magento/magento-composer-installer": "*",
+    "openpay/sdk": "^1.0"
   },
   "type": "magento2-module",
   "version": "0.1.1",
@@ -17,6 +18,7 @@
   },
   "autoload": {
     "files": [
+      "vendor/openpay/sdk/Openpay.php",
       "registration.php"
     ],
     "psr-4": {
