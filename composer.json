@@ -4,8 +4,14 @@
   "require": {
     "php": "~5.5.0|~5.6.0",
     "magento/magento-composer-installer": "*",
-    "openpay/sdk": "^1.0"
+    "degaray/openpay-php": "dev-dev"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/degaray/openpay-php.git"
+    }
+  ],
   "type": "magento2-module",
   "version": "0.1.1",
   "extra": {
