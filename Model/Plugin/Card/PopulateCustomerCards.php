@@ -8,6 +8,7 @@
 
 namespace Degaray\Openpay\Model\Plugin\Card;
 
+use Degaray\Openpay\Model\Adapter\OpenpayCreditCard;
 use Degaray\Openpay\Model\ResourceModel\Card\CollectionFactory as CardCollectionFactory;
 use Magento\Customer\Api\Data\CustomerExtensionFactory;
 use Magento\Customer\Model\Customer;
@@ -30,16 +31,24 @@ class PopulateCustomerCards
     protected $cardCollectionFactory;
 
     /**
+     * @var OpenpayCreditCard
+     */
+    protected $creditCard;
+
+    /**
      * PopulateCustomerCards constructor.
      * @param CustomerExtensionFactory $customerExtensionFactory
      * @param CardCollectionFactory $cardCollectionFactory
+     * @param OpenpayCreditCard $creditCard
      */
     public function __construct(
         CustomerExtensionFactory $customerExtensionFactory,
-        CardCollectionFactory $cardCollectionFactory
+        CardCollectionFactory $cardCollectionFactory,
+        OpenpayCreditCard $creditCard
     ) {
         $this->customerExtensionFactory = $customerExtensionFactory;
         $this->cardCollectionFactory = $cardCollectionFactory;
+        $this->creditCard = $creditCard;
     }
 
     /**
