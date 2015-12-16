@@ -4,7 +4,7 @@
   "require": {
     "php": "~5.5.0|~5.6.0",
     "magento/magento-composer-installer": "*",
-    "degaray/openpay-php": "*"
+    "degaray/openpay-php": "dev-master"
   },
   "repositories": [
     {
@@ -29,6 +29,5 @@
     "psr-4": {
       "Degaray\\Openpay\\": ""
     }
-  },
-  "minimum-stability": "dev"
+  }
 }
