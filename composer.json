@@ -10,7 +10,7 @@
   "require": {
     "php": "~5.5.0|~5.6.0",
     "magento/magento-composer-installer": "*",
-    "degaray/openpay-php": "dev-master"
+    "openpay/openpay-php": "dev-master"
   },
   "type": "magento2-module",
   "version": "0.1.1",
