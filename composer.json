@@ -27,7 +27,8 @@
       "registration.php"
     ],
     "psr-4": {
-      "Degaray\\Openpay\\": ""
+      "Degaray\\Openpay\\": "",
+        "": "app/"
     }
   }
 }
