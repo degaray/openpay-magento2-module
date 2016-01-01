@@ -56,4 +56,9 @@ interface CardRepositoryInterface
      */
     public function deleteById($cardId);
 
+    /**
+     * @param $openpayCustomerId
+     * @return array
+     */
+    public function getCardsByOpenpayCustomerId($openpayCustomerId);
 }

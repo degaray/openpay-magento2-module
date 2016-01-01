@@ -28,6 +28,8 @@ class UpgradeData implements UpgradeDataInterface
      */
     const CUSTOMER_ADDRESS_EAV_ENTITY_TYPE = 'customer_address';
 
+    const OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE = 'openpay_customer_id';
+
     /**
      * @var CustomerSetupFactory
      */
@@ -49,12 +51,12 @@ class UpgradeData implements UpgradeDataInterface
     {
         $dbVersion = $context->getVersion();
 
-        if (version_compare($dbVersion, '0.1.0', '<')) {
+        if (version_compare($dbVersion, '0.1.10', '<')) {
             /** @var CustomerSetup $customerSetup */
-            /*$customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
+            $customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
             $customerSetup->addAttribute(
                 self::CUSTOMER_EAV_ENTITY_TYPE,
-                'openpay_customer_id',
+                self::OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE,
                 [
                     'label' => 'Openpay Customer ID',
                     'required' => 0,
@@ -62,9 +64,9 @@ class UpgradeData implements UpgradeDataInterface
                     'position' => 100
                 ]
             );
-            $customerSetup->getEavConfig()->getAttribute('customer', 'openpay_customer_id')
+            $customerSetup->getEavConfig()->getAttribute('customer', self::OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE)
                 ->setData('used_in_forms', ['adminhtml_customer'])
-                ->save();*/
+                ->save();
 
             $customerAddressSetup = $this->customerSetupFactory->create(['setup' => $setup]);
             $customerAddressSetup->addAttribute(
