@@ -2,6 +2,11 @@ At the moment this module is only thought to be used as one for Magento2 and usi
 
 How to use this module:
 
+Configure OpenPay Payment keys.
+-------------------------------
+
+Enter into Magento2 admin panel and go to `Stores > Configuration > Sales > Payment Methods > OpenPay` and **enable** the payment method, then enter all the information provided by OpenPay in the correct fields. Also select **yes** from `Modo pruebas (Sandbox)` if you want to use sandbox credentials or **no** if you want to use production credentials.
+
 Create a card
 --------------
 
