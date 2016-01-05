@@ -51,7 +51,7 @@ class UpgradeData implements UpgradeDataInterface
     {
         $dbVersion = $context->getVersion();
 
-        if (version_compare($dbVersion, '0.1.10', '<')) {
+        if (version_compare($dbVersion, '0.1.0', '<')) {
             /** @var CustomerSetup $customerSetup */
             $customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
             $customerSetup->addAttribute(
