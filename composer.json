@@ -1,17 +1,19 @@
 {
-  "name": "degaray/openpay-magento2-module",
+  "name": "degaray/openpay",
   "description": "OpenPay module for Magento2, a payment gateway in Mexico",
   "require": {
-    "magento/magento-composer-installer": "*"
+    "php": "~5.5.0|~5.6.0",
+    "magento/magento-composer-installer": "*",
+    "degaray/openpay-php-client": "^0.0"
   },
   "type": "magento2-module",
-  "version": "0.1.0",
-  "extra": {
-    "map": [
-      [
-        "*",
-        "Degaray/Openpay"
-      ]
-    ]
+  "version": "0.1.1",
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Degaray\\Openpay\\": ""
+    }
   }
 }

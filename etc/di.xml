@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Degaray\Openpay\Api\Data\CardInterface"
+                type="Degaray\Openpay\Model\Data\Card" />
+    <preference for="Degaray\Openpay\Api\Data\AddressInterface"
+                type="Degaray\Openpay\Model\Data\Address" />
+    <preference for="Degaray\Openpay\Api\CardRepositoryInterface"
+                type="Degaray\Openpay\Model\Card\OpenpayCardRepository" />
+    <preference for="Degaray\Openpay\Model\Customer\OpenpayCustomerRepositoryInterface"
+                type="Degaray\Openpay\Model\Customer\OpenpayCustomerRepository"/>
+    <preference for="Openpay\Client\Adapter\OpenpayCustomerAdapterInterface"
+                type="OpenpayCustomerAdapter" />
+    <preference for="Openpay\Client\Adapter\OpenpayCardAdapterInterface"
+                type="OpenpayCardAdapter" />
+    <preference for="GuzzleHttp\ClientInterface"
+                type="GuzzleClient" />
+    <virtualType name="GuzzleClient" type="Degaray\Openpay\Model\Adapter\OpenpayClient">
+        <arguments>
+            <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="OpenpayCustomerAdapter" type="Degaray\Openpay\Model\Adapter\OpenpayCustomerAdapter">
+        <arguments>
+            <argument name="OpenpayCustomerMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerMapper</argument>
+            <argument name="OpenpayCustomerType" xsi:type="object">Openpay\Client\Type\OpenpayCustomerType</argument>
+            <argument name="ClientInterface" xsi:type="object">GuzzleHttp\ClientInterface</argument>
+            <argument name="OpenpayCustomerValidator" xsi:type="object">Openpay\Client\Validator\OpenpayCustomerValidator</argument>
+            <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="OpenpayCardAdapter" type="Degaray\Openpay\Model\Adapter\OpenpayCardAdapter">
+        <arguments>
+            <argument name="OpenpayCustomerMapper" xsi:type="object">GuzzleHttp\ClientInterface</argument>
+            <argument name="OpenpayCardMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCardMapper</argument>
+            <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Customer\Model\Customer">
+        <plugin name="degaray_openpay_populate_customer_cards"
+                type="Degaray\Openpay\Model\Plugin\Card\PopulateCustomerCards" />
+    </type>
+    <type name="Magento\Customer\Api\CustomerRepositoryInterface">
+        <plugin name="degaray_openpay_save_customer_cards"
+                type="Degaray\Openpay\Model\Plugin\Card\SaveCustomerCards" />
+    </type>
+</config>
