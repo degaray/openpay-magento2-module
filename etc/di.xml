@@ -2,6 +2,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Degaray\Openpay\Api\Data\CardInterface"
                 type="Degaray\Openpay\Model\Data\Card" />
+    <preference for="Degaray\Openpay\Api\Data\AddressInterface"
+                type="Degaray\Openpay\Model\Data\Address" />
     <preference for="Degaray\Openpay\Api\CardRepositoryInterface"
                 type="Degaray\Openpay\Model\Card\OpenpayCardRepository" />
     <preference for="Degaray\Openpay\Model\Customer\OpenpayCustomerRepositoryInterface"

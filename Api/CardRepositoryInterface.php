@@ -19,11 +19,12 @@ interface CardRepositoryInterface
      * Save customer card.
      *
      * @api
-     * @param \Degaray\Openpay\Api\Data\CardInterface $cardInterface
+     * @param string $customerId
+     * @param CardInterface $card
      * @return \Degaray\Openpay\Api\Data\CardInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function save(CardInterface $cardInterface);
+    public function save($customerId, CardInterface $card);
 
     /**
      * Retrieve customer card.

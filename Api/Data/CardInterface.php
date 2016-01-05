@@ -1,9 +1,8 @@
 <?php
 namespace Degaray\Openpay\Api\Data;
 
-use \Magento\Customer\Api\Data\AddressInterface;
 use \Magento\Framework\Api\ExtensibleDataInterface;
-use \DateTime;
+
 /**
  * Created by Xavier de Garay.
  * User: degaray
@@ -62,7 +61,7 @@ interface CardInterface extends ExtensibleDataInterface
      * Get customer ID
      *
      * @api
-     * @return int|null
+     * @return string|null
      */
     public function getCustomerId();
 
@@ -70,7 +69,7 @@ interface CardInterface extends ExtensibleDataInterface
      * Set customer ID
      *
      * @api
-     * @param int $customerId
+     * @param string $customerId
      * @return $this
      */
     public function setCustomerId($customerId);
@@ -95,28 +94,28 @@ interface CardInterface extends ExtensibleDataInterface
 
     /**
      * Get creation at datetime
-     * @return DateTime
+     * @return \Magento\Framework\Stdlib\DateTime
      */
     public function getCreatedAt();
 
     /**
      * Set creation time
      *
-     * @param DateTime $created_at
+     * @param \Magento\Framework\Stdlib\DateTime $created_at
      * @return $this
      */
     public function setCreatedAt($created_at);
 
     /**
      * Get updated at datetime
-     * @return DateTime
+     * @return \Magento\Framework\Stdlib\DateTime
      */
     public function getUpdatedAt();
 
     /**
      * Set updated at time
      *
-     * @param DateTime $updated_at
+     * @param \Magento\Framework\Stdlib\DateTime $updated_at
      * @return $this
      */
     public function setUpdatedAt($updated_at);
@@ -254,13 +253,13 @@ interface CardInterface extends ExtensibleDataInterface
     public function setBankCode($bank_code);
 
     /**
-     * @return \Magento\Customer\Api\Data\AddressInterface
+     * @return \Degaray\Openpay\Api\Data\AddressInterface
      */
     public function getAddress();
 
     /**
-     * @param \Magento\Customer\Api\Data\AddressInterface $address
-     * @return \Magento\Customer\Api\Data\AddressInterface
+     * @param \Degaray\Openpay\Api\Data\AddressInterface $address
+     * @return \Degaray\Openpay\Api\Data\AddressInterface
      */
     public function setAddress(AddressInterface $address);
 }

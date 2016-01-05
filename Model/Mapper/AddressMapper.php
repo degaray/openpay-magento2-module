@@ -8,34 +8,25 @@
 
 namespace Degaray\Openpay\Model\Mapper;
 
-
-use Magento\Customer\Api\Data\AddressInterface;
+use Degaray\Openpay\Api\Data\AddressInterface;
 use Openpay\Client\Type\OpenpayAddressType;
-use Magento\Customer\Api\Data\RegionInterface;
-use Magento\Customer\Api\Data\AddressInterfaceFactory;
 
 class AddressMapper
 {
     const COUNTRY_CODE_MEXICO = 'MX';
+
     /**
-     * @var AddressInterface
+     * @var OpenpayAddressType
      */
     protected $object;
 
     /**
-     * @var RegionInterface
-     */
-    protected $region;
-
-    /**
      * AddressMapper constructor.
-     * @param AddressInterfaceFactory $factory
-     * @param RegionInterface $region
+     * @param AddressInterface $addressType
      */
-    public function __construct(AddressInterfaceFactory $factory, RegionInterface $region)
+    public function __construct(AddressInterface $addressType)
     {
-        $this->object = $factory->create([]);
-        $this->region = $region;
+        $this->object = $addressType;
     }
 
     /**
@@ -53,18 +44,15 @@ class AddressMapper
      */
     protected function populate(OpenpayAddressType $addressType)
     {
-        $this->object->setCity($addressType->getCity());
-        $this->object->setCountryId(self::COUNTRY_CODE_MEXICO);
-        $this->object->setPostcode($addressType->getPostalCode());
-        $region = $this->region->setRegion($addressType->getState());
-        $this->object->setRegion($region);
-        $street = [
-            $addressType->getLine1(),
-            $addressType->getLine2(),
-            $addressType->getLine3()
-        ];
-        $this->object->setStreet($street);
+        $object = clone $this->object;
+        $object->setCity($addressType->getCity());
+        $object->setState($addressType->getState());
+        $object->setCountryCode($addressType->getCountryCode());
+        $object->setLine1($addressType->getLine1());
+        $object->setLine2($addressType->getLine2());
+        $object->setLine3($addressType->getLine3());
+        $object->setPostalCode($addressType->getPostalCode());
 
-        return $this->object;
+        return $object;
     }
 }

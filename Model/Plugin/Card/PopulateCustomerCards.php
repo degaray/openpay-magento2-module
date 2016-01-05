@@ -9,6 +9,7 @@
 namespace Degaray\Openpay\Model\Plugin\Card;
 
 use Degaray\Openpay\Api\CardRepositoryInterface;
+use Degaray\Openpay\Api\Data\CardInterface;
 use Degaray\Openpay\Model\ResourceModel\Card\CollectionFactory as CardCollectionFactory;
 use Degaray\Openpay\Setup\UpgradeData;
 use Magento\Customer\Api\Data\CustomerExtensionFactory;
@@ -56,20 +57,46 @@ class PopulateCustomerCards
     /**
      * @param Customer $customer
      * @param $customerDataObject
-     * @return mixed
+     * @return \Magento\Customer\Model\Data\Customer
      */
     public function afterGetDataModel(Customer $customer, $customerDataObject)
     {
-        $openpayCustomer = $customerDataObject->getCustomAttribute(UpgradeData::OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE);
+        $openpayCustomerId = $this->getOpenpayCustomerId($customerDataObject);
         $cards = [];
-        if (!is_null($openpayCustomer)) {
-            $openpayCustomerId = $openpayCustomer->getValue('openpay_customer_id');
-            $cards = $this->cardRepository->getCardsByOpenpayCustomerId($openpayCustomerId);
+
+
+        if (!is_null($openpayCustomerId)) {
+            $cards = $this->getCardsFromOpenpay($openpayCustomerId);
         }
 
         $extension = $this->customerExtensionFactory->create()->setOpenpayCard($cards);
         $customerDataObject->setExtensionAttributes($extension);
 
         return $customerDataObject;
+    }
+
+    /**
+     * @param $customerDataObject
+     * @return CardInterface
+     */
+    protected function getCardsFromOpenpay($customerDataObject)
+    {
+        $cards = $this->cardRepository->getCardsByOpenpayCustomerId($customerDataObject);
+
+        return $cards;
+    }
+
+    /**
+     * @param $customerDataObject
+     * @return string
+     */
+    protected function getOpenpayCustomerId($customerDataObject)
+    {
+        $openpayCustomer = $customerDataObject->getCustomAttribute(UpgradeData::OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE);
+
+        $openpayCustomerId = ($openpayCustomer)?
+            $openpayCustomer->getValue(UpgradeData::OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE) : null;
+
+        return $openpayCustomerId;
     }
 }

@@ -49,24 +49,25 @@ class CardMapper
      */
     protected function populate(OpenpayCardType $cardType)
     {
-        $this->object->setCustomerId($cardType->getCustomerId());
-        $this->object->setCardId($cardType->getId());
-        $this->object->setCreatedAt($cardType->getCreationDate());
+        $object = clone $this->object;
+        $object->setCustomerId($cardType->getCustomerId());
+        $object->setCardId($cardType->getId());
+        $object->setCreatedAt($cardType->getCreationDate());
 
-        $this->object->setType($cardType->getType());
-        $this->object->setBrand($cardType->getBrand());
-        $this->object->setCardNumber($cardType->getCardNumber());
-        $this->object->setHolderName($cardType->getHolderName());
-        $this->object->setExpirationYear($cardType->getExpirationYear());
-        $this->object->setExpirationMonth($cardType->getExpirationMonth());
-        $this->object->setAllowsCharges($cardType->isAllowsCharges());
-        $this->object->setAllowsPayouts($cardType->isAllowsPayouts());
-        $this->object->setBankName($cardType->getBankName());
-        $this->object->setBankCode($cardType->getBankCode());
+        $object->setType($cardType->getType());
+        $object->setBrand($cardType->getBrand());
+        $object->setCardNumber($cardType->getCardNumber());
+        $object->setHolderName($cardType->getHolderName());
+        $object->setExpirationYear($cardType->getExpirationYear());
+        $object->setExpirationMonth($cardType->getExpirationMonth());
+        $object->setAllowsCharges($cardType->isAllowsCharges());
+        $object->setAllowsPayouts($cardType->isAllowsPayouts());
+        $object->setBankName($cardType->getBankName());
+        $object->setBankCode($cardType->getBankCode());
 
         $address = $this->addressMapper->create($cardType->getAddress());
-        $this->object->setAddress($address);
+        $object->setAddress($address);
 
-        return $this->object;
+        return $object;
     }
 }

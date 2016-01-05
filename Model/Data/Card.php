@@ -8,10 +8,9 @@
 
 namespace Degaray\Openpay\Model\Data;
 
+use Degaray\Openpay\Api\Data\AddressInterface;
 use Degaray\Openpay\Api\Data\CardInterface;
-use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Framework\Model\AbstractModel;
-use \DateTime;
 
 /**
  * Class Card
@@ -38,7 +37,7 @@ class Card extends AbstractModel implements CardInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getCustomerId()
     {
@@ -46,7 +45,7 @@ class Card extends AbstractModel implements CardInterface
     }
 
     /**
-     * @param int $customerId
+     * @param string $customerId
      * @return $this
      */
     public function setCustomerId($customerId)
@@ -74,7 +73,7 @@ class Card extends AbstractModel implements CardInterface
     }
 
     /**
-     * @return Datetime
+     * @return \Magento\Framework\Stdlib\DateTime
      */
     public function getCreatedAt()
     {
@@ -82,7 +81,7 @@ class Card extends AbstractModel implements CardInterface
     }
 
     /**
-     * @param DateTime $created_at
+     * @param \Magento\Framework\Stdlib\DateTime $created_at
      * @return $this
      */
     public function setCreatedAt($created_at)
@@ -92,7 +91,7 @@ class Card extends AbstractModel implements CardInterface
     }
 
     /**
-     * @return Datetime
+     * @return \Magento\Framework\Stdlib\DateTime
      */
     public function getUpdatedAt()
     {
@@ -100,7 +99,7 @@ class Card extends AbstractModel implements CardInterface
     }
 
     /**
-     * @param DateTime $updated_at
+     * @param \Magento\Framework\Stdlib\DateTime $updated_at
      * @return $this
      */
     public function setUpdatedAt($updated_at)
@@ -326,7 +325,7 @@ class Card extends AbstractModel implements CardInterface
     }
 
     /**
-     * @return mixed
+     * @return AddressInterface
      */
     public function getAddress()
     {
@@ -334,7 +333,7 @@ class Card extends AbstractModel implements CardInterface
     }
 
     /**
-     * @param mixed $address
+     * @param AddressInterface $address
      * @return $this
      */
     public function setAddress(AddressInterface $address)
