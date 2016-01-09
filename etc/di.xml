@@ -19,6 +19,19 @@
             <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
     </virtualType>
+    <virtualType name="OpenpayClientCustomerMapper" type="Openpay\Client\Mapper\OpenpayCustomerMapper">
+        <arguments>
+            <argument name="OpenpayAddressMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayAddressMapper</argument>
+            <argument name="OpenpayStoreMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayStoreMapper</argument>
+            <argument name="OpenpayCustomerType" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerType</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="OpenpayClientCardMapper" type="Openpay\Client\Mapper\OpenpayCardMapper">
+        <arguments>
+            <argument name="OpenpayCardType" xsi:type="object">Openpay\Client\Type\OpenpayCardType</argument>
+            <argument name="OpenpayAddressMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayAddressMapper</argument>
+        </arguments>
+    </virtualType>
     <virtualType name="OpenpayCustomerAdapter" type="Degaray\Openpay\Model\Adapter\OpenpayCustomerAdapter">
         <arguments>
             <argument name="OpenpayCustomerMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerMapper</argument>
