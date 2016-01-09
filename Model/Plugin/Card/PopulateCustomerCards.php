@@ -64,7 +64,6 @@ class PopulateCustomerCards
         $openpayCustomerId = $this->getOpenpayCustomerId($customerDataObject);
         $cards = [];
 
-
         if (!is_null($openpayCustomerId)) {
             $cards = $this->getCardsFromOpenpay($openpayCustomerId);
         }
@@ -81,8 +80,13 @@ class PopulateCustomerCards
      */
     protected function getCardsFromOpenpay($customerDataObject)
     {
-        $cards = $this->cardRepository->getCardsByOpenpayCustomerId($customerDataObject);
-
+        try {
+            $cards = $this->cardRepository->getCardsByOpenpayCustomerId($customerDataObject);
+        } catch (\Exception $e) {
+            $cards = [
+                'error' => __('Could not retrieve available cards from openpay for the given user')
+            ];
+        }
         return $cards;
     }
 
