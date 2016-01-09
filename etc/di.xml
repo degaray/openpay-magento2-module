@@ -44,7 +44,7 @@
     </virtualType>
     <virtualType name="OpenpayCardAdapter" type="Degaray\Openpay\Model\Adapter\OpenpayCardAdapter">
         <arguments>
-            <argument name="OpenpayCustomerMapper" xsi:type="object">GuzzleHttp\ClientInterface</argument>
+            <argument name="OpenpayCustomerMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerMapper</argument>
             <argument name="OpenpayCardMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCardMapper</argument>
             <argument name="OpenpayExceptionMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayExceptionMapper</argument>
             <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
