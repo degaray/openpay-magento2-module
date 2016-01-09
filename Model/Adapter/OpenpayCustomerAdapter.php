@@ -28,7 +28,14 @@ class OpenpayCustomerAdapter extends NonInjectableCustomerAdapter implements Ope
         ScopeConfigInterface $config
     ) {
         $paymentOpenpayConfig = $config->getValue('payment/openpay');
-        parent::__construct($customerMapper, $customerType, $client, $customerValidator, $exceptionMapper, $paymentOpenpayConfig);
+        parent::__construct(
+            $customerMapper,
+            $customerType,
+            $client,
+            $customerValidator,
+            $exceptionMapper,
+            $paymentOpenpayConfig
+        );
     }
 
 }
