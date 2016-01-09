@@ -67,24 +67,6 @@ class UpgradeData implements UpgradeDataInterface
             $customerSetup->getEavConfig()->getAttribute('customer', self::OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE)
                 ->setData('used_in_forms', ['adminhtml_customer'])
                 ->save();
-
-            $customerAddressSetup = $this->customerSetupFactory->create(['setup' => $setup]);
-            $customerAddressSetup->addAttribute(
-                self::CUSTOMER_ADDRESS_EAV_ENTITY_TYPE,
-                'openpay_cc_id',
-                [
-                    'type' => 'text',
-                    'label' => 'Openpay Credit Card ID',
-                    'required' => 0,
-                    'system' => 0,
-                    'position' => 100
-                ]
-            );
-            $customerAddressSetup->getEavConfig()->getAttribute(
-                self::CUSTOMER_ADDRESS_EAV_ENTITY_TYPE,
-                'openpay_cc_id'
-            )->setData('used_in_forms', ['adminhtml_customer_address'])
-            ->save();
         }
     }
 }

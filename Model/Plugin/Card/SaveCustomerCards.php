@@ -16,6 +16,7 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\ResourceModel\Customer;
 use Magento\Customer\Model\ResourceModel\CustomerRepository;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
 use Magento\Framework\Validator\Exception;
 
@@ -45,16 +46,13 @@ class SaveCustomerCards
     }
 
     /**
-     * @param $customerRepository
-     * @param $proceed
-     * @param $customer
-     * @return CustomerInterface
-     * @throws Exception
+     * @param CustomerRepository $customerRepository
+     * @param CustomerInterface $customer
+     * @throws LocalizedException
      */
-    public function aroundSave(CustomerRepository $customerRepository, \Closure $proceed, CustomerInterface $customer)
+    public function beforeSave(CustomerRepository $customerRepository, CustomerInterface $customer)
     {
         $this->validateOpenpayCustomerId($customerRepository, $customer);
-
         if ($this->shouldSaveOpenpayCustomerId($customerRepository, $customer)) {
             $openpayCustomer  = $this->saveCustomerInOpenpay($customer);
             $openpayCustomerId = $openpayCustomer->getId();
@@ -67,7 +65,6 @@ class SaveCustomerCards
         if (!is_null($customerExtensionAtributes)) {
             $cards = $customerExtensionAtributes->getOpenpayCard();
         }
-
         $currentCards = $this->cardRepository->getCardsByOpenpayCustomerId($openpayCustomerId);
         $cardsToDelete = $this->getCardsToDelete($currentCards, $cards);
         $this->deleteCards($cardsToDelete);
@@ -78,9 +75,6 @@ class SaveCustomerCards
         if ($this->shouldRefreshCards($cardsToSave, $cardsToDelete)) {
             $this->refreshCards($customer);
         }
-
-        $savedCustomer = $proceed($customer);
-        return $savedCustomer;
     }
 
     /**
@@ -137,7 +131,7 @@ class SaveCustomerCards
     /**
      * @param $customerRepository
      * @param $customer
-     * @throws Exception
+     * @throws LocalizedException
      */
     public function validateOpenpayCustomerId($customerRepository, $customer)
     {
@@ -149,9 +143,9 @@ class SaveCustomerCards
             return;
         }
 
-        // give error in case request wants to update the openapay customerId
+        // give error in case request wants to update the openpay customerId
         if ($openpayCustomerId !== $savedOpenpayCustomerId) {
-            throw new Exception(new Phrase('Openpay Customer Id cannot be updated'));
+            throw new LocalizedException(__('Openpay Customer Id cannot be updated'));
         }
     }
 
