@@ -13,6 +13,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Openpay\Client\Adapter\OpenpayCustomerAdapter as NonInjectableCustomerAdapter;
 use Openpay\Client\Adapter\OpenpayCustomerAdapterInterface;
 use Openpay\Client\Mapper\OpenpayCustomerMapper;
+use Openpay\Client\Mapper\OpenpayExceptionMapper;
 use Openpay\Client\Type\OpenpayCustomerType;
 use Openpay\Client\Validator\OpenpayCustomerValidator;
 
@@ -23,10 +24,11 @@ class OpenpayCustomerAdapter extends NonInjectableCustomerAdapter implements Ope
         OpenpayCustomerType $customerType,
         ClientInterface $client,
         OpenpayCustomerValidator $customerValidator,
+        OpenpayExceptionMapper $exceptionMapper,
         ScopeConfigInterface $config
     ) {
         $paymentOpenpayConfig = $config->getValue('payment/openpay');
-        parent::__construct($customerMapper, $customerType, $client, $customerValidator, $paymentOpenpayConfig);
+        parent::__construct($customerMapper, $customerType, $client, $customerValidator, $exceptionMapper, $paymentOpenpayConfig);
     }
 
 }

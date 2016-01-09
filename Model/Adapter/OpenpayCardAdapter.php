@@ -7,6 +7,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Openpay\Client\Adapter\OpenpayCardAdapter as NonInjectableCardAdapter;
 use Openpay\Client\Adapter\OpenpayCardAdapterInterface;
 use Openpay\Client\Mapper\OpenpayCardMapper;
+use Openpay\Client\Mapper\OpenpayExceptionMapper;
 
 /**
  * Created by Xavier de Garay.
@@ -22,9 +23,10 @@ class OpenpayCardAdapter extends NonInjectableCardAdapter implements OpenpayCard
     public function __construct(
         ClientInterface $client,
         OpenpayCardMapper $cardMapper,
+        OpenpayExceptionMapper $exceptionMapper,
         ScopeConfigInterface $config
     ) {
         $paymentOpenpayConfig = $config->getValue('payment/openpay');
-        parent::__construct($client, $cardMapper, $paymentOpenpayConfig);
+        parent::__construct($client, $cardMapper, $exceptionMapper, $paymentOpenpayConfig);
     }
 }
