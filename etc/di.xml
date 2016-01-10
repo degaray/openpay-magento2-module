@@ -19,22 +19,9 @@
             <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
     </virtualType>
-    <virtualType name="OpenpayCustomerMapper" type="Openpay\Client\Mapper\OpenpayCustomerMapper">
-        <arguments>
-            <argument name="OpenpayAddressMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayAddressMapper</argument>
-            <argument name="OpenpayStoreMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayStoreMapper</argument>
-            <argument name="OpenpayCustomerType" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerType</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="OpenpayCardMapper" type="Openpay\Client\Mapper\OpenpayCardMapper">
-        <arguments>
-            <argument name="OpenpayCardType" xsi:type="object">Openpay\Client\Type\OpenpayCardType</argument>
-            <argument name="OpenpayAddressMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayAddressMapper</argument>
-        </arguments>
-    </virtualType>
     <virtualType name="OpenpayCustomerAdapter" type="Degaray\Openpay\Model\Adapter\OpenpayCustomerAdapter">
         <arguments>
-            <argument name="OpenpayCustomerMapper" xsi:type="object">OpenpayCustomerMapper</argument>
+            <argument name="OpenpayCustomerMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerMapper</argument>
             <argument name="OpenpayCustomerType" xsi:type="object">Openpay\Client\Type\OpenpayCustomerType</argument>
             <argument name="ClientInterface" xsi:type="object">GuzzleHttp\ClientInterface</argument>
             <argument name="OpenpayCustomerValidator" xsi:type="object">Openpay\Client\Validator\OpenpayCustomerValidator</argument>
@@ -44,8 +31,8 @@
     </virtualType>
     <virtualType name="OpenpayCardAdapter" type="Degaray\Openpay\Model\Adapter\OpenpayCardAdapter">
         <arguments>
-            <argument name="OpenpayCustomerMapper" xsi:type="object">OpenpayCustomerMapper</argument>
-            <argument name="OpenpayCardMapper" xsi:type="object">OpenpayCardMapper</argument>
+            <argument name="OpenpayCustomerMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerMapper</argument>
+            <argument name="OpenpayCardMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCardMapper</argument>
             <argument name="OpenpayExceptionMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayExceptionMapper</argument>
             <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
