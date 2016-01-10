@@ -9,7 +9,9 @@
 namespace Degaray\Openpay\Model\Customer;
 
 use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Openpay\Client\Adapter\OpenpayCustomerAdapterInterface;
+use Openpay\Client\Exception\OpenpayException;
 
 class OpenpayCustomerRepository implements OpenpayCustomerRepositoryInterface
 {
@@ -32,6 +34,7 @@ class OpenpayCustomerRepository implements OpenpayCustomerRepositoryInterface
     /**
      * @param CustomerInterface $customer
      * @return \Openpay\Client\Type\OpenpayCustomerType
+     * @throws LocalizedException
      */
     public function save(CustomerInterface $customer)
     {
@@ -43,7 +46,11 @@ class OpenpayCustomerRepository implements OpenpayCustomerRepositoryInterface
             'external_id' => $customer->getId(),
         ];
 
-        $openpayCustomer = $this->customerAdapter->store($params);
+        try {
+            $openpayCustomer = $this->customerAdapter->store($params);
+        } catch (OpenpayException $e) {
+            throw new LocalizedException(__($e->getDescription()), $e);
+        }
 
         return $openpayCustomer;
     }
