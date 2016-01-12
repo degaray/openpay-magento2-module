@@ -65,8 +65,10 @@ class CardMapper
         $object->setBankName($cardType->getBankName());
         $object->setBankCode($cardType->getBankCode());
 
-        $address = $this->addressMapper->create($cardType->getAddress());
-        $object->setAddress($address);
+        if (!is_null($cardType->getAddress())) {
+            $address = $this->addressMapper->create($cardType->getAddress());
+            $object->setAddress($address);
+        }
 
         return $object;
     }

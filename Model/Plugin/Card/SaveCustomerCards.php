@@ -64,6 +64,9 @@ class SaveCustomerCards
         $customerExtensionAtributes = $customer->getExtensionAttributes();
         if (!is_null($customerExtensionAtributes)) {
             $cards = $customerExtensionAtributes->getOpenpayCard();
+            if (!isset($cards)) {
+                throw new LocalizedException(__('You must provide an openpay_card with the extension_attributes.'));
+            }
         }
         $currentCards = $this->cardRepository->getCardsByOpenpayCustomerId($openpayCustomerId);
         $cardsToDelete = $this->getCardsToDelete($currentCards, $cards);
