@@ -10,8 +10,9 @@ namespace Degaray\Openpay\Model\Method;
 
 
 use Magento\Payment\Model\Method\AbstractMethod;
+use Magento\Payment\Model\Method\Cc;
 
-class OpenpayPaymentMethod extends AbstractMethod
+class OpenpayPaymentMethod extends Cc
 {
     const METHOD_CODE = 'openpay';
 
