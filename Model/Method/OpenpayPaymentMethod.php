@@ -6,11 +6,20 @@
  * Time: 10:19 AM
  */
 
-namespace Degaray\Openpay\Method\Model;
+namespace Degaray\Openpay\Model\Method;
 
-use Magento\Payment\Model\Method\Cc;
 
-class OpenpayPaymentMethod extends Cc
+use Magento\Payment\Model\Method\AbstractMethod;
+
+class OpenpayPaymentMethod extends AbstractMethod
 {
     const METHOD_CODE = 'openpay';
+
+    public function validate()
+    {
+        parent::validate();
+
+        $paymentInfo = $this->getInfoInstance();
+
+    }
 }
