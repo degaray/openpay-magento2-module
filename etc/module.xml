@@ -7,9 +7,11 @@
 -->
 <config>
     <module name="Degaray_Openpay" setup_version="0.1.0">
-        <!--<sequence>
-            <module name="Magento_Customer"/>
-            <module name="Magento_Checkout"/>
-        </sequence>-->
+        <sequence>
+            <module name="Magento_Sales" />
+            <module name="Magento_Payment" />
+            <module name="Magento_Directory" />
+            <module name="Magento_Config" />
+        </sequence>
     </module>
 </config>
