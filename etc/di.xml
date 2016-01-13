@@ -14,11 +14,21 @@
                 type="OpenpayCardAdapter" />
     <preference for="GuzzleHttp\ClientInterface"
                 type="GuzzleClient" />
+
+    <type name="Openpay\Client\Mapper\OpenpayCustomerMapper">
+        <arguments>
+            <argument name="OpenpayAddressMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayAddressMapper</argument>
+            <argument name="OpenpayStoreMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayStoreMapper</argument>
+            <argument name="OpenpayCustomerType" xsi:type="object">Openpay\Client\Type\OpenpayCustomerType</argument>
+        </arguments>
+    </type>
+
     <virtualType name="GuzzleClient" type="Degaray\Openpay\Model\Adapter\OpenpayClient">
         <arguments>
             <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
     </virtualType>
+
     <virtualType name="OpenpayCustomerAdapter" type="Degaray\Openpay\Model\Adapter\OpenpayCustomerAdapter">
         <arguments>
             <argument name="OpenpayCustomerMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerMapper</argument>
@@ -29,6 +39,7 @@
             <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
     </virtualType>
+
     <virtualType name="OpenpayCardAdapter" type="Degaray\Openpay\Model\Adapter\OpenpayCardAdapter">
         <arguments>
             <argument name="OpenpayCustomerMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerMapper</argument>
@@ -37,10 +48,12 @@
             <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
     </virtualType>
+
     <type name="Magento\Customer\Model\Customer">
         <plugin name="degaray_openpay_populate_customer_cards"
                 type="Degaray\Openpay\Model\Plugin\Card\PopulateCustomerCards" />
     </type>
+
     <type name="Magento\Customer\Api\CustomerRepositoryInterface">
         <plugin name="degaray_openpay_save_customer_cards"
                 type="Degaray\Openpay\Model\Plugin\Card\SaveCustomerCards" />
