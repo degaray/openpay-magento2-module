@@ -21,4 +21,10 @@ interface OpenpayCustomerRepositoryInterface
      * @return \Openpay\Client\Type\OpenpayCustomerType
      */
     public function save(CustomerInterface $customer);
+
+    /**
+     * @param $customerId
+     * @return \Openpay\Client\Type\OpenpayCustomerType
+     */
+    public function get($customerId);
 }

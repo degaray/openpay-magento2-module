@@ -23,11 +23,21 @@
                 <field id="publicKey" translate="label" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Llave pública</label>
                 </field>
-                <field id="sandbox" translate="label" type="select" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="sandbox" translate="label" type="select" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Modo pruebas (Sandbox)</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="verificationCode" translate="label" type="label" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="chargeMinAmount" translate="label" type="text" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Cargo a Tarjeta Mínimo</label>
+                </field>
+                <field id="paymentLeyend" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Leyenda del Pago</label>
+                </field>
+                <field id="useOrderId" translate="label" type="label" sortOrder="16" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Use OrderId in OpenPay</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="verificationCode" translate="label" type="label" sortOrder="16" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Código de verificación para url de notificaciones</label>
                     <comment>Código de verificación que Openpay envia para comprobar la url de entrega de notificaiones</comment>
                 </field>
