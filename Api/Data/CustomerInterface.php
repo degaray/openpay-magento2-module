@@ -23,7 +23,7 @@ interface CustomerInterface extends ExtensibleDataInterface
     const EXTERNAL_ID = 'external_id';
     const BALANCE = 'balance';
     const ADDRESS = 'address';
-    const STORE = 'balance';
+    const STORE = 'store';
     const CLABE = 'clabe';
 
     /**
@@ -41,13 +41,13 @@ interface CustomerInterface extends ExtensibleDataInterface
 
     /**
      * @api
-     * @return \DateTime
+     * @return \Magento\Framework\Stdlib\DateTime
      */
     public function getCreationDate();
 
     /**
      * @api
-     * @param \DateTime $creation_date
+     * @param \Magento\Framework\Stdlib\DateTime $creation_date
      * @return $this
      */
     public function setCreationDate($creation_date);

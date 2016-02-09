@@ -5,6 +5,7 @@ namespace Degaray\Openpay\Model\Data;
 use Degaray\Openpay\Api\Data\AddressInterface;
 use Degaray\Openpay\Api\Data\CustomerInterface;
 use Degaray\Openpay\Api\Data\StoreInterface;
+use Magento\Framework\Model\AbstractModel;
 
 /**
  * Created by PhpStorm.
@@ -15,7 +16,7 @@ use Degaray\Openpay\Api\Data\StoreInterface;
  * Class Customer
  * @package Degaray\Openpay\Model\Data
  */
-class Customer implements CustomerInterface
+class Customer extends AbstractModel implements CustomerInterface
 {
     /**
      * @var string
@@ -23,7 +24,7 @@ class Customer implements CustomerInterface
     protected $entity_id;
 
     /**
-     * @var \DateTime
+     * @var \Magento\Framework\Stdlib\DateTime
      */
     protected $creation_date;
 
@@ -91,7 +92,7 @@ class Customer implements CustomerInterface
     }
 
     /**
-     * @return \DateTime
+     * @return \Magento\Framework\Stdlib\DateTime
      */
     public function getCreationDate()
     {
@@ -99,7 +100,7 @@ class Customer implements CustomerInterface
     }
 
     /**
-     * @param \DateTime $creation_date
+     * @param \Magento\Framework\Stdlib\DateTime $creation_date
      * @return $this
      */
     public function setCreationDate($creation_date)
@@ -207,7 +208,7 @@ class Customer implements CustomerInterface
     }
 
     /**
-     * @param string $balance
+     * @param $balance
      * @return $this
      */
     public function setBalance($balance)
