@@ -8,6 +8,7 @@
 
 namespace Degaray\Openpay\Model\Plugin\Checkout;
 
+use Degaray\Openpay\Model\Method\OpenpayChargeCustomerCardMethod;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
@@ -51,14 +52,16 @@ class HandleCard
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress
     ) {
-        $card = $paymentMethod->getExtensionAttributes()->getOpenpayCard();
-        $cardId = $card->getData('card_id');
-        $deviceSessionId = $card->getData('device_session_id');
+        if ($paymentMethod->getMethod() === OpenpayChargeCustomerCardMethod::METHOD_CODE) {
+            $card = $paymentMethod->getExtensionAttributes()->getOpenpayCard();
+            $cardId = $card->getData('card_id');
+            $deviceSessionId = $card->getData('device_session_id');
 
-        $this->validate($cartId, $cardId, $deviceSessionId);
+            $this->validate($cartId, $cardId, $deviceSessionId);
 
-        $paymentMethod->setAdditionalInformation('customer_card_id', $cardId);
-        $paymentMethod->setAdditionalInformation('device_session_id', $deviceSessionId);
+            $paymentMethod->setAdditionalInformation('customer_card_id', $cardId);
+            $paymentMethod->setAdditionalInformation('device_session_id', $deviceSessionId);
+        }
     }
 
     /**

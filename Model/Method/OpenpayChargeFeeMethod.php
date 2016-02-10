@@ -15,29 +15,32 @@ use Magento\Framework\Phrase;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\AbstractMethod;
 use Magento\Quote\Api\Data\CartInterface;
-use Openpay\Client\Adapter\OpenpayChargeAdapterInterface;
+use Openpay\Client\Adapter\OpenpayFeeAdapterInterface;
 use Openpay\Client\Exception\OpenpayException;
 
-class OpenpayPaymentMethod extends AbstractMethod
+class OpenpayChargeFeeMethod extends AbstractMethod
 {
-    const METHOD_CODE = 'openpay-charge-customer-card';
+    const METHOD_CODE = 'openpay-charge-fee';
 
-    const OPENPAY_PAYMENT_METHOD_CARD = 'card';
+    const OPENPAY_PAYMENT_METHOD_FEE = 'fee';
 
     protected $_code = self::METHOD_CODE;
 
     protected $_isGateway                   = true;
-    protected $_canAuthorize                = true;
+    protected $_canAuthorize                = false;
     protected $_canCapture                  = true;
     protected $_canRefund                   = true;
 
-    protected $chargeAdapter;
+    /**
+     * @var OpenpayFeeAdapterInterface
+     */
+    protected $feeAdapter;
     protected $config;
     protected $customerRepository;
 
     /**
-     * OpenpayPaymentMethod constructor.
-     * @param OpenpayChargeAdapterInterface $chargeAdapter
+     * OpenpayChargeCustomerCardMethod constructor.
+     * @param OpenpayFeeAdapterInterface $feeAdapter
      * @param ScopeConfigInterface $config
      * @param CustomerRepositoryInterface $customerRepository
      * @param \Magento\Framework\Model\Context $context
@@ -52,7 +55,7 @@ class OpenpayPaymentMethod extends AbstractMethod
      * @param array $data
      */
     public function __construct(
-        OpenpayChargeAdapterInterface $chargeAdapter,
+        OpenpayFeeAdapterInterface $feeAdapter,
         ScopeConfigInterface $config,
         CustomerRepositoryInterface $customerRepository,
         \Magento\Framework\Model\Context $context,
@@ -66,7 +69,7 @@ class OpenpayPaymentMethod extends AbstractMethod
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->chargeAdapter = $chargeAdapter;
+        $this->feeAdapter = $feeAdapter;
         $this->config = $config;
         $this->customerRepository = $customerRepository;
 
@@ -84,11 +87,6 @@ class OpenpayPaymentMethod extends AbstractMethod
         );
     }
 
-    public function validate()
-    {
-        parent::validate();
-    }
-
     /**
      * @param InfoInterface $payment
      * @param float $amount
@@ -104,26 +102,20 @@ class OpenpayPaymentMethod extends AbstractMethod
 
         $openpayCustomerId = $customer->getCustomAttribute('openpay_customer_id')->getValue();
 
-        $cardId = $payment->getAdditionalInformation('customer_card_id');
-        $deviceSessionId = $payment->getAdditionalInformation('device_session_id');
-
         $order = $payment->getOrder();
-        $currency = $order->getOrderCurrencyCode();
         $useOrderId = $this->getConfigData('useOrderId');
         $paymentLeyend = $this->getConfigData('paymentLeyend');
         $orderId = $order->getIncrementId();
         $params = [
-            'source_id' => $cardId,
-            'method' => self::OPENPAY_PAYMENT_METHOD_CARD,
+            'customer_id' => $openpayCustomerId,
             'amount' => $amount,
-            'currency' => $currency,
             'description' => __($paymentLeyend)->getText(),
             'order_id' => ($useOrderId) ? $orderId : null,
-            'device_session_id' => $deviceSessionId
         ];
 
+
         try {
-            $transaction = $this->chargeAdapter->chargeCustomerCard($openpayCustomerId, $params);
+            $transaction = $this->feeAdapter->chargeFee($params);
 
             $payment
                 ->setTransactionId($transaction->getId())
@@ -144,15 +136,9 @@ class OpenpayPaymentMethod extends AbstractMethod
     public function isAvailable(CartInterface $quote = null)
     {
         $customer = $quote->getCustomer();
-        $openpayCards = $customer->getExtensionAttributes()->getOpenpayCard();
+        $openpayCustomer = $customer->getExtensionAttributes()->getOpenpayCustomer();
 
-        if (count($openpayCards) === 0) {
-            return false;
-        }
-
-        $openpayConfigValues = $this->config->getValue('payment/openpay');
-        $chargeMinAmount = $openpayConfigValues['chargeMinAmount'];
-        if ($chargeMinAmount > $quote->getGrandTotal()) {
+        if ($openpayCustomer->getBalance() < $quote->getGrandTotal()) {
             return false;
         }
 

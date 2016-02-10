@@ -14,6 +14,8 @@
                 type="Degaray\Openpay\Model\Customer\OpenpayCustomerRepository"/>
     <preference for="Openpay\Client\Adapter\OpenpayChargeAdapterInterface"
                 type="Degaray\Openpay\Model\Adapter\OpenpayChargeAdapter"/>
+    <preference for="Openpay\Client\Adapter\OpenpayFeeAdapterInterface"
+                type="Degaray\Openpay\Model\Adapter\OpenpayFeeAdapter"/>
     <preference for="Openpay\Client\Adapter\OpenpayCustomerAdapterInterface"
                 type="OpenpayCustomerAdapter" />
     <preference for="Openpay\Client\Adapter\OpenpayCardAdapterInterface"
