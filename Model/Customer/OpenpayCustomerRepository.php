@@ -104,4 +104,15 @@ class OpenpayCustomerRepository implements OpenpayCustomerRepositoryInterface
         $cacheIdentifier = md5(self::CUSTOMER_CACHE_PREFIX . $openpayCustomerId);
         return $cacheIdentifier;
     }
+
+    /**
+     * @param $openpayCustomerId
+     * @return bool
+     */
+    public function clearCustomerCache($openpayCustomerId)
+    {
+        $cacheIdentifier = $this->getCacheIdentifier($openpayCustomerId);
+
+        return $this->cache->remove($cacheIdentifier);
+    }
 }

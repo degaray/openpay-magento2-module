@@ -27,4 +27,10 @@ interface OpenpayCustomerRepositoryInterface
      * @return \Openpay\Client\Type\OpenpayCustomerType
      */
     public function get($customerId);
+
+    /**
+     * @param $openpayCustomerId
+     * @return bool
+     */
+    public function clearCustomerCache($openpayCustomerId);
 }
