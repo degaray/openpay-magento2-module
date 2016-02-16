@@ -106,7 +106,7 @@ class OpenpayCustomerRepository implements OpenpayCustomerRepositoryInterface
     }
 
     /**
-     * @param $openpayCustomerId
+     * @param string $openpayCustomerId
      * @return bool
      */
     public function clearCustomerCache($openpayCustomerId)

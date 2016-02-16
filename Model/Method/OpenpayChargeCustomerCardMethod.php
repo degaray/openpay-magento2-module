@@ -8,6 +8,7 @@
 
 namespace Degaray\Openpay\Model\Method;
 
+use Degaray\Openpay\Model\Customer\OpenpayCustomerRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -31,15 +32,32 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
     protected $_canCapture                  = true;
     protected $_canRefund                   = true;
 
+    /**
+     * @var OpenpayChargeAdapterInterface
+     */
     protected $chargeAdapter;
+
+    /**
+     * @var ScopeConfigInterface
+     */
     protected $config;
+
+    /**
+     * @var CustomerRepositoryInterface
+     */
     protected $customerRepository;
+
+    /**
+     * @var OpenpayCustomerRepositoryInterface
+     */
+    protected $openpayCustomerRepository;
 
     /**
      * OpenpayChargeCustomerCardMethod constructor.
      * @param OpenpayChargeAdapterInterface $chargeAdapter
      * @param ScopeConfigInterface $config
      * @param CustomerRepositoryInterface $customerRepository
+     * @param OpenpayCustomerRepositoryInterface $openpayCustomerRepository
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
@@ -55,6 +73,7 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
         OpenpayChargeAdapterInterface $chargeAdapter,
         ScopeConfigInterface $config,
         CustomerRepositoryInterface $customerRepository,
+        OpenpayCustomerRepositoryInterface $openpayCustomerRepository,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory,
@@ -69,6 +88,7 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
         $this->chargeAdapter = $chargeAdapter;
         $this->config = $config;
         $this->customerRepository = $customerRepository;
+        $this->openpayCustomerRepository = $openpayCustomerRepository;
 
         parent::__construct(
             $context,
@@ -128,7 +148,7 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
             $payment
                 ->setTransactionId($transaction->getId())
                 ->setIsTransactionClosed(0);
-            $this->customerRepository->clearCache($customerId);
+            $this->openpayCustomerRepository->clearCustomerCache($customerId);
         } catch (OpenpayException $e) {
             $this->debugData(['request' => $params, 'exception' => $e->getMessage()]);
             $this->_logger->error(__('Payment capturing error.'));

@@ -8,6 +8,7 @@
 
 namespace Degaray\Openpay\Model\Method;
 
+use Degaray\Openpay\Model\Customer\OpenpayCustomerRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -37,12 +38,14 @@ class OpenpayChargeFeeMethod extends AbstractMethod
     protected $feeAdapter;
     protected $config;
     protected $customerRepository;
+    protected $openpayCustomerRepository;
 
     /**
      * OpenpayChargeCustomerCardMethod constructor.
      * @param OpenpayFeeAdapterInterface $feeAdapter
      * @param ScopeConfigInterface $config
      * @param CustomerRepositoryInterface $customerRepository
+     * @param OpenpayCustomerRepositoryInterface $openpayCustomerRepository
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
@@ -58,6 +61,7 @@ class OpenpayChargeFeeMethod extends AbstractMethod
         OpenpayFeeAdapterInterface $feeAdapter,
         ScopeConfigInterface $config,
         CustomerRepositoryInterface $customerRepository,
+        OpenpayCustomerRepositoryInterface $openpayCustomerRepository,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory,
@@ -72,6 +76,7 @@ class OpenpayChargeFeeMethod extends AbstractMethod
         $this->feeAdapter = $feeAdapter;
         $this->config = $config;
         $this->customerRepository = $customerRepository;
+        $this->openpayCustomerRepository = $openpayCustomerRepository;
 
         parent::__construct(
             $context,
@@ -120,6 +125,8 @@ class OpenpayChargeFeeMethod extends AbstractMethod
             $payment
                 ->setTransactionId($transaction->getId())
                 ->setIsTransactionClosed(0);
+
+       $this->openpayCustomerRepository->clearCustomerCache($customerId);
         } catch (OpenpayException $e) {
             $this->debugData(['request' => $params, 'exception' => $e->getMessage()]);
             $this->_logger->error(__('Payment capturing error.'));
