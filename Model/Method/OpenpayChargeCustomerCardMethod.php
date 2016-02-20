@@ -148,7 +148,7 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
             $payment
                 ->setTransactionId($transaction->getId())
                 ->setIsTransactionClosed(0);
-            $this->openpayCustomerRepository->clearCustomerCache($customerId);
+            $this->openpayCustomerRepository->clearCustomerCache($openpayCustomerId);
         } catch (OpenpayException $e) {
             $this->debugData(['request' => $params, 'exception' => $e->getMessage()]);
             $this->_logger->error(__('Payment capturing error.'));
