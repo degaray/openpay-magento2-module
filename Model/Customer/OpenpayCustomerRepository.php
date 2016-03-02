@@ -75,7 +75,7 @@ class OpenpayCustomerRepository implements OpenpayCustomerRepositoryInterface
     public function get($openpayCustomerId)
     {
         $cacheIdentifier = $this->getCacheIdentifier($openpayCustomerId);
-
+        //$this->cache->remove($cacheIdentifier);
         $openpayCustomer = unserialize($this->cache->load($cacheIdentifier));
 
         if ($openpayCustomer === false) {
