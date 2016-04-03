@@ -44,6 +44,7 @@
             <argument name="ClientInterface" xsi:type="object">GuzzleHttp\ClientInterface</argument>
             <argument name="OpenpayCustomerValidator" xsi:type="object">Openpay\Client\Validator\OpenpayCustomerValidator</argument>
             <argument name="OpenpayExceptionMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayExceptionMapper</argument>
+            <argument name="Encryptor" xsi:type="object">Magento\Framework\Encryption\EncryptorInterface</argument>
             <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
     </virtualType>
@@ -53,6 +54,7 @@
             <argument name="OpenpayCustomerMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCustomerMapper</argument>
             <argument name="OpenpayCardMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayCardMapper</argument>
             <argument name="OpenpayExceptionMapper" xsi:type="object">Openpay\Client\Mapper\OpenpayExceptionMapper</argument>
+            <argument name="Encryptor" xsi:type="object">Magento\Framework\Encryption\EncryptorInterface</argument>
             <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
     </virtualType>

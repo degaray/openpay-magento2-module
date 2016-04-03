@@ -4,6 +4,7 @@ namespace Degaray\Openpay\Model\Adapter;
 
 use GuzzleHttp\ClientInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Encryption\EncryptorInterface;
 use Openpay\Client\Adapter\OpenpayFeeAdapter as NonInjectableOpenpayFeeAdapter;
 use Openpay\Client\Adapter\OpenpayFeeAdapterInterface;
 use Openpay\Client\Mapper\OpenpayExceptionMapper;
@@ -26,9 +27,15 @@ class OpenpayFeeAdapter extends NonInjectableOpenpayFeeAdapter implements Openpa
         OpenpayExceptionMapper $exceptionMapper,
         OpenpayFeeValidator $validator,
         OpenpayTransactionMapper $transactionMapper,
+        EncryptorInterface $encryptor,
         ScopeConfigInterface $config
     ) {
-        $openpayConfigValues = $config->getValue('payment/openpay');
-        parent::__construct($client, $exceptionMapper, $validator, $transactionMapper, $openpayConfigValues);
+        $paymentOpenpayConfig = $config->getValue('payment/openpay');
+
+        $paymentOpenpayConfig['merchantId'] = $encryptor->decrypt($paymentOpenpayConfig['merchantId']);
+        $paymentOpenpayConfig['apiKey'] = $encryptor->decrypt($paymentOpenpayConfig['apiKey']);
+        $paymentOpenpayConfig['publicKey'] = $encryptor->decrypt($paymentOpenpayConfig['publicKey']);
+        
+        parent::__construct($client, $exceptionMapper, $validator, $transactionMapper, $paymentOpenpayConfig);
     }
 }
