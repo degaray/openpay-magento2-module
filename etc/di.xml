@@ -22,6 +22,10 @@
                 type="OpenpayCardAdapter" />
     <preference for="GuzzleHttp\ClientInterface"
                 type="GuzzleClient" />
+    <preference for="Degaray\Openpay\Api\Data\CredentialsInterface"
+                type="Degaray\Openpay\Model\Data\Credentials" />
+    <preference for="Degaray\Openpay\Api\CredentialsRepositoryInterface"
+                type="Degaray\Openpay\Model\CredentialsRepository" />
 
     <type name="Openpay\Client\Mapper\OpenpayCustomerMapper">
         <arguments>
