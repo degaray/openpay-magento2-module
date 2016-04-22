@@ -102,8 +102,13 @@ class OpenpayCardRepository implements CardRepositoryInterface
             try {
                 $cardsArray = $this->cardAdapter->getList($openpayCustomerId);
             } catch (OpenpayException $e) {
-                throw new LocalizedException(__($e->getDescription()), $e);
+                $description = $e->getDescription();
+                if (is_null($description)) {
+                    $description = 'We could not retrieve your payment gateway information.';
+                }
+                throw new LocalizedException(__($description), $e);
             }
+
             $this->cache->save(serialize($cardsArray), $cacheIdentifier, [], self::CACHE_TIME_SECONDS);
         }
 

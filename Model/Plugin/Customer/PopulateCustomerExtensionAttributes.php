@@ -1,25 +1,25 @@
 <?php
+
+namespace Degaray\Openpay\Model\Plugin\Customer;
+
+use Degaray\Openpay\Api\CardRepositoryInterface;
+use Degaray\Openpay\Api\Data\CardInterface;
+use Degaray\Openpay\Helper\CustomerHelper;
+use Degaray\Openpay\Model\Customer\OpenpayCustomerRepositoryInterface;
+use Degaray\Openpay\Model\ResourceModel\Card\CollectionFactory as CardCollectionFactory;
+use Magento\Customer\Api\Data\CustomerExtensionFactory;
+use Magento\Customer\Model\Customer;
+
 /**
  * Created by Xavier de Garay.
  * User: degaray
  * Date: 3/12/15
  * Time: 12:36 PM
- */
-
-namespace Degaray\Openpay\Model\Plugin\Card;
-
-use Degaray\Openpay\Api\CardRepositoryInterface;
-use Degaray\Openpay\Api\Data\CardInterface;
-use Degaray\Openpay\Model\ResourceModel\Card\CollectionFactory as CardCollectionFactory;
-use Degaray\Openpay\Setup\UpgradeData;
-use Magento\Customer\Api\Data\CustomerExtensionFactory;
-use Magento\Customer\Model\Customer;
-
-/**
- * Class PopulateCustomerCards
+ *
+ * Class PopulateCustomerExtensionAttributes
  * @package Degaray\Openpay\Model\Plugin\Card
  */
-class PopulateCustomerCards
+class PopulateCustomerExtensionAttributes
 {
     const CUSTOMER_EXTENSION_FACTORY_PATH = 'Magento\Customer\Api\Data\CustomerExtensionFactory';
 
@@ -39,19 +39,35 @@ class PopulateCustomerCards
     protected $cardRepository;
 
     /**
+     * @var CustomerHelper
+     */
+    protected $customerHelper;
+
+    /**
+     * @var OpenpayCustomerRepositoryInterface
+     */
+    protected $openpayCustomerRepository;
+
+    /**
      * PopulateCustomerCards constructor.
      * @param CustomerExtensionFactory $customerExtensionFactory
      * @param CardCollectionFactory $cardCollectionFactory
      * @param CardRepositoryInterface $cardRepository
+     * @param OpenpayCustomerRepositoryInterface $openpayCustomerRepository
+     * @param CustomerHelper $customerHelper
      */
     public function __construct(
         CustomerExtensionFactory $customerExtensionFactory,
         CardCollectionFactory $cardCollectionFactory,
-        CardRepositoryInterface $cardRepository
+        CardRepositoryInterface $cardRepository,
+        OpenpayCustomerRepositoryInterface $openpayCustomerRepository,
+        CustomerHelper $customerHelper
     ) {
         $this->customerExtensionFactory = $customerExtensionFactory;
         $this->cardCollectionFactory = $cardCollectionFactory;
         $this->cardRepository = $cardRepository;
+        $this->customerHelper = $customerHelper;
+        $this->openpayCustomerRepository = $openpayCustomerRepository;
     }
 
     /**
@@ -61,22 +77,24 @@ class PopulateCustomerCards
      */
     public function afterGetDataModel(Customer $customer, $customerDataObject)
     {
-        $openpayCustomerId = $this->getOpenpayCustomerId($customerDataObject);
-        $cards = [];
+        $openpayCustomerId = $this->customerHelper->getOpenpayCustomerId($customerDataObject);
 
         if (!is_null($openpayCustomerId)) {
-            $cards = $this->getCardsFromOpenpay($openpayCustomerId);
-        }
+            $openpayCards = $this->getCardsFromOpenpay($openpayCustomerId);
+            $openpayCustomer = $this->getCustomerFromOpenpay($openpayCustomerId);
 
-        $extension = $this->customerExtensionFactory->create()->setOpenpayCard($cards);
-        $customerDataObject->setExtensionAttributes($extension);
+            $extensionAttributes = $this->customerExtensionFactory->create()
+                ->setOpenpayCard($openpayCards)
+                ->setOpenpayCustomer($openpayCustomer);
+            $customerDataObject->setExtensionAttributes($extensionAttributes);
+        }
 
         return $customerDataObject;
     }
 
     /**
      * @param $customerDataObject
-     * @return CardInterface
+     * @return CardInterface[]
      */
     protected function getCardsFromOpenpay($customerDataObject)
     {
@@ -84,7 +102,7 @@ class PopulateCustomerCards
             $cards = $this->cardRepository->getCardsByOpenpayCustomerId($customerDataObject);
         } catch (\Exception $e) {
             $cards = [
-                'error' => __('Could not retrieve available cards from openpay for the given user')
+                'error' => __('Could not retrieve available cards from OpenPay for the given user')
             ];
         }
         return $cards;
@@ -92,15 +110,17 @@ class PopulateCustomerCards
 
     /**
      * @param $customerDataObject
-     * @return string
+     * @return array|\Openpay\Client\Type\OpenpayCustomerType
      */
-    protected function getOpenpayCustomerId($customerDataObject)
+    protected function getCustomerFromOpenpay($customerDataObject)
     {
-        $openpayCustomer = $customerDataObject->getCustomAttribute(UpgradeData::OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE);
-
-        $openpayCustomerId = ($openpayCustomer)?
-            $openpayCustomer->getValue(UpgradeData::OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE) : null;
-
-        return $openpayCustomerId;
+        try {
+            $customer = $this->openpayCustomerRepository->get($customerDataObject);
+        } catch (\Exception $e) {
+            $customer = [
+                'error' => __('Could not retrieve available customer from OpenPay for the given user')
+            ];
+        }
+        return $customer;
     }
 }

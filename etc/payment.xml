@@ -2,8 +2,13 @@
 <payment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Magento/Payment/etc/payment.xsd">
     <methods>
         <method name="openpay">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+        <method name="openpay-charge-customer-card">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+        <method name="openpay-charge-fee">
             <allow_multiple_address>1</allow_multiple_address>
         </method>
     </methods>
 </payment>
-

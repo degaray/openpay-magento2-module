@@ -6,19 +6,18 @@
  * Time: 10:52 AM
  */
 
-namespace Degaray\Openpay\Model\Plugin\Card;
+namespace Degaray\Openpay\Model\Plugin\Customer;
 
 use Degaray\Openpay\Api\CardRepositoryInterface;
 use Degaray\Openpay\Api\Data\CardInterface;
 use Degaray\Openpay\Model\Customer\OpenpayCustomerRepositoryInterface;
+use Degaray\Openpay\Model\Exception\OpenpayException;
 use Degaray\Openpay\Setup\UpgradeData;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\ResourceModel\Customer;
-use Magento\Customer\Model\ResourceModel\CustomerRepository;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
-use Magento\Framework\Validator\Exception;
 
 class SaveCustomerCards
 {
@@ -46,11 +45,11 @@ class SaveCustomerCards
     }
 
     /**
-     * @param CustomerRepository $customerRepository
+     * @param CustomerRepositoryInterface $customerRepository
      * @param CustomerInterface $customer
      * @throws LocalizedException
      */
-    public function beforeSave(CustomerRepository $customerRepository, CustomerInterface $customer)
+    public function beforeSave(CustomerRepositoryInterface $customerRepository, CustomerInterface $customer)
     {
         $this->validateOpenpayCustomerId($customerRepository, $customer);
         if ($this->shouldSaveOpenpayCustomerId($customerRepository, $customer)) {
@@ -68,7 +67,9 @@ class SaveCustomerCards
                 throw new LocalizedException(__('You must provide an openpay_card with the extension_attributes.'));
             }
         }
+
         $currentCards = $this->cardRepository->getCardsByOpenpayCustomerId($openpayCustomerId);
+
         $cardsToDelete = $this->getCardsToDelete($currentCards, $cards);
         $this->deleteCards($cardsToDelete);
 
