@@ -145,7 +145,9 @@ class OpenpayChargeFeeMethod extends AbstractMethod
         $customer = $quote->getCustomer();
         $openpayCustomer = $customer->getExtensionAttributes()->getOpenpayCustomer();
 
-        if ($openpayCustomer->getBalance() < $quote->getData('grand_total')) {
+        if (($openpayCustomer->getBalance() < $quote->getData('grand_total')) ||
+            ($quote->getData('grand_total') <= 0)
+        ){
             return false;
         }
 
