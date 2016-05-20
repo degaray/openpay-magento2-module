@@ -72,8 +72,4 @@
         <plugin name="degaray_openpay_save_customer_cards"
                 type="Degaray\Openpay\Model\Plugin\Customer\SaveCustomerCards" />
     </type>
-
-    <type name="Magento\Checkout\Api\PaymentInformationManagementInterface">
-        <plugin name="handle_card" type="Degaray\Openpay\Model\Plugin\Checkout\HandleCard"/>
-    </type>
 </config>
