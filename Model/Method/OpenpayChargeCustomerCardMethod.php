@@ -171,9 +171,9 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
 
         $infoInstance = $this->getInfoInstance();
 
-        $additionalInformation = $data->getData()['additional_information'];
-        $infoInstance->setAdditionalInformation('customer_card_id', $additionalInformation['customer_card_id']);
-        $infoInstance->setAdditionalInformation('device_session_id', $additionalInformation['device_session_id']);
+        $openpayCard = $data->getData()['additional_data']['extension_attributes']->getOpenpayCard();
+        $infoInstance->setAdditionalInformation('customer_card_id', $openpayCard->getCardId());
+        $infoInstance->setAdditionalInformation('device_session_id', $openpayCard->getDeviceSessionId());
 
         return $this;
     }
