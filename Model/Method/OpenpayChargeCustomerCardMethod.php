@@ -159,6 +159,26 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
     }
 
     /**
+     * Assign corresponding data
+     *
+     * @param \Magento\Framework\DataObject|mixed $data
+     * @return $this
+     * @throws LocalizedException
+     */
+    public function assignData(\Magento\Framework\DataObject $data)
+    {
+        parent::assignData($data);
+
+        $infoInstance = $this->getInfoInstance();
+
+        $additionalInformation = $data->getData()['additional_information'];
+        $infoInstance->setAdditionalInformation('customer_card_id', $additionalInformation['customer_card_id']);
+        $infoInstance->setAdditionalInformation('device_session_id', $additionalInformation['device_session_id']);
+
+        return $this;
+    }
+
+    /**
      * @param CartInterface|null $quote
      * @return bool
      */
