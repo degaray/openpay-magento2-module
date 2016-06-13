@@ -24,7 +24,7 @@
                 <useOrderId>true</useOrderId>
             </openpay-charge-customer-card>
             <openpay-charge-fee>
-                <title>OpenPay Charge Customer Card</title>
+                <title>OpenPay Customer Charge Fee</title>
                 <model>Degaray\Openpay\Model\Method\OpenpayChargeFeeMethod</model>
                 <order_status>processing</order_status>
                 <payment_action>authorize_capture</payment_action>
