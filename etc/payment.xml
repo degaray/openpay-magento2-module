@@ -10,5 +10,8 @@
         <method name="openpay-charge-fee">
             <allow_multiple_address>1</allow_multiple_address>
         </method>
+        <method name="openpay-customer-transfer">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
     </methods>
 </payment>
