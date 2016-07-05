@@ -22,6 +22,7 @@
                 <currencies_accepted>MXN,USD</currencies_accepted>
                 <paymentLeyend>Openpay Payment Done</paymentLeyend>
                 <useOrderId>true</useOrderId>
+                <active>1</active>
             </openpay-charge-customer-card>
             <openpay-charge-fee>
                 <title>OpenPay Customer Charge Fee</title>
@@ -31,7 +32,18 @@
                 <currencies_accepted>MXN</currencies_accepted>
                 <paymentLeyend>Fee Charged to account</paymentLeyend>
                 <useOrderId>true</useOrderId>
+                <active>1</active>
             </openpay-charge-fee>
+            <openpay-customer-transfer>
+                <title>OpenPay Customer Transfer</title>
+                <model>Degaray\Openpay\Model\Method\OpenpayCustomerTransferMethod</model>
+                <order_status>processing</order_status>
+                <payment_action>authorize_capture</payment_action>
+                <currencies_accepted>MXN</currencies_accepted>
+                <paymentLeyend>Account transfer</paymentLeyend>
+                <useOrderId>true</useOrderId>
+                <active>1</active>
+            </openpay-customer-transfer>
         </payment>
     </default>
 </config>

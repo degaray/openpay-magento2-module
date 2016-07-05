@@ -10,7 +10,7 @@
     "magento/module-config": "*",
     "magento/module-customer": "*",
     "magento/module-checkout": "*",
-    "degaray/openpay-php-client": "dev-dev"
+    "degaray/openpay-php-client": "dev-master"
   },
   "repositories": [
     {

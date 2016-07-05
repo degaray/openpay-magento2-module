@@ -1,48 +1,43 @@
 <?php
 /**
- * Created by Xavier de Garay.
- * User: degaray
- * Date: 16/12/15
- * Time: 10:19 AM
+ * Created by PhpStorm.
+ * User: xavier
+ * Date: 6/29/16
+ * Time: 1:07 PM
  */
 
 namespace Degaray\Openpay\Model\Method;
 
+use Degaray\Openpay\Model\Adapter\OpenpayTransferAdapter;
 use Degaray\Openpay\Model\Customer\OpenpayCustomerRepositoryInterface;
+use Degaray\Openpay\Model\Exception\OpenpayException;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Phrase;
-use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\AbstractMethod;
 use Magento\Quote\Api\Data\CartInterface;
-use Openpay\Client\Adapter\OpenpayFeeAdapterInterface;
-use Openpay\Client\Exception\OpenpayException;
 
-class OpenpayChargeFeeMethod extends AbstractMethod
+class OpenpayCustomerTransferMethod extends AbstractMethod
 {
-    const METHOD_CODE = 'openpay-charge-fee';
+    const METHOD_CODE = 'openpay-customer-transfer';
 
-    const OPENPAY_PAYMENT_METHOD_FEE = 'fee';
+    const OPENPAY_PAYMENT_METHOD_TRANSFER = 'transfer';
 
     protected $_code = self::METHOD_CODE;
 
     protected $_isGateway                   = true;
     protected $_canAuthorize                = false;
     protected $_canCapture                  = true;
-    protected $_canRefund                   = false;
+    protected $_canRefund                   = true;
 
-    /**
-     * @var OpenpayFeeAdapterInterface
-     */
-    protected $feeAdapter;
+    protected $transferAdapter;
     protected $config;
     protected $customerRepository;
     protected $openpayCustomerRepository;
 
     /**
      * OpenpayChargeCustomerCardMethod constructor.
-     * @param OpenpayFeeAdapterInterface $feeAdapter
+     * @param OpenpayTransferAdapter $transferAdapter
      * @param ScopeConfigInterface $config
      * @param CustomerRepositoryInterface $customerRepository
      * @param OpenpayCustomerRepositoryInterface $openpayCustomerRepository
@@ -58,7 +53,7 @@ class OpenpayChargeFeeMethod extends AbstractMethod
      * @param array $data
      */
     public function __construct(
-        OpenpayFeeAdapterInterface $feeAdapter,
+        OpenpayTransferAdapter $transferAdapter,
         ScopeConfigInterface $config,
         CustomerRepositoryInterface $customerRepository,
         OpenpayCustomerRepositoryInterface $openpayCustomerRepository,
@@ -73,7 +68,7 @@ class OpenpayChargeFeeMethod extends AbstractMethod
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->feeAdapter = $feeAdapter;
+        $this->transferAdapter = $transferAdapter;
         $this->config = $config;
         $this->customerRepository = $customerRepository;
         $this->openpayCustomerRepository = $openpayCustomerRepository;
@@ -92,48 +87,90 @@ class OpenpayChargeFeeMethod extends AbstractMethod
         );
     }
 
-    /**
-     * @param InfoInterface $payment
-     * @param float $amount
-     * @return $this
-     * @throws LocalizedException
-     */
-    public function capture(InfoInterface $payment, $amount)
+    public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        parent::capture($payment, $amount);
-
         $customerId = $payment->getOrder()->getCustomerId();
         $customer = $this->customerRepository->getById($customerId);
 
         $openpayCustomerId = $customer->getCustomAttribute('openpay_customer_id')->getValue();
+
+        $destinationCustomer = $payment->getAdditionalInformation('destination_customer');
 
         $order = $payment->getOrder();
         $useOrderId = $this->getConfigData('useOrderId');
         $paymentLeyend = $this->getConfigData('paymentLeyend');
         $orderId = $order->getIncrementId();
         $params = [
-            'customer_id' => $openpayCustomerId,
+            'customer_id' => $destinationCustomer,
             'amount' => $amount,
             'description' => __($paymentLeyend)->getText(),
             'order_id' => ($useOrderId) ? $orderId : null,
         ];
 
-
         try {
-            $transaction = $this->feeAdapter->chargeFee($params);
+            $transaction = $this->transferAdapter->transfer($openpayCustomerId, $params);
 
             $payment
                 ->setTransactionId($transaction->getId())
                 ->setIsTransactionClosed(0);
 
             $this->openpayCustomerRepository->clearCustomerCache($openpayCustomerId);
+            $this->openpayCustomerRepository->clearCustomerCache($destinationCustomer);
         } catch (OpenpayException $e) {
             $this->debugData(['request' => $params, 'exception' => $e->getMessage()]);
             $this->_logger->error(__('Payment capturing error.'));
-            throw new LocalizedException(new Phrase('[' . $e->getErrorCode() . ']' . $e->getMessage()));
+            throw new LocalizedException(__('[' . $e->getErrorCode() . ']' . $e->getMessage()));
         }
 
+        parent::capture($payment, $amount);
+
         return $this;
+    }
+
+    /**
+     * @param \Magento\Payment\Model\InfoInterface $payment
+     * @param float $amount
+     * @return $this
+     * @throws LocalizedException
+     */
+    public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    {
+        $senderCustomer = $payment->getAdditionalInformation('destination_customer');
+
+        $customerId = $payment->getOrder()->getCustomerId();
+        $customer = $this->customerRepository->getById($customerId);
+
+        $destinationCustomer = $customer->getCustomAttribute('openpay_customer_id')->getValue();
+
+        $paymentLeyend = __('Refund for: ') . __($this->getConfigData('paymentLeyend'))->getText();
+
+        $order = $payment->getOrder();
+        $useOrderId = $this->getConfigData('useOrderId');
+        $orderId = $order->getIncrementId();
+
+        $params = [
+            'customer_id' => $destinationCustomer,
+            'amount' => $amount,
+            'description' => $paymentLeyend,
+            'order_id' => ($useOrderId) ? $orderId . '-refund' : null,
+        ];
+
+        try {
+            $transaction = $this->transferAdapter->transfer($senderCustomer, $params);
+
+            $payment
+                ->setTransactionId($transaction->getId())
+                ->setIsTransactionClosed(0);
+
+            $this->openpayCustomerRepository->clearCustomerCache($senderCustomer);
+            $this->openpayCustomerRepository->clearCustomerCache($destinationCustomer);
+        } catch (OpenpayException $e) {
+            $this->debugData(['request' => $params, 'exception' => $e->getMessage()]);
+            $this->_logger->error(__('Payment capturing error.'));
+            throw new LocalizedException(__('[' . $e->getErrorCode() . ']' . $e->getMessage()));
+        }
+
+        return parent::refund($payment, $amount); // TODO: Change the autogenerated stub
     }
 
     /**
@@ -142,7 +179,7 @@ class OpenpayChargeFeeMethod extends AbstractMethod
      */
     public function isActive($storeId = null)
     {
-        if (!$this->config->getValue('payment/openpay/chargeFeeActive')) {
+        if (!$this->config->getValue('payment/openpay/customerTransferActive')) {
             return false;
         }
 
@@ -177,10 +214,28 @@ class OpenpayChargeFeeMethod extends AbstractMethod
         return true;
     }
 
-    public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    /**
+     * Assign corresponding data
+     *
+     * @param \Magento\Framework\DataObject|mixed $data
+     * @return $this
+     * @throws LocalizedException
+     */
+    public function assignData(\Magento\Framework\DataObject $data)
     {
+        parent::assignData($data);
 
-        return parent::refund($payment, $amount);
+        $infoInstance = $this->getInfoInstance();
+
+        $additionalData = $data->getData()['additional_data'];
+
+        if (is_null($additionalData) || !array_key_exists('destination_customer', $additionalData)) {
+            $additionalData['destination_customer'] = $this->config->getValue('payment/openpay/concentratorAccount');
+        }
+
+        $infoInstance->setAdditionalInformation('destination_customer', $additionalData['destination_customer']);
+
+        return $this;
     }
 
     /**
