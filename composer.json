@@ -12,12 +12,6 @@
     "magento/module-checkout": "*",
     "degaray/openpay-php-client": "dev-master"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/degaray/openpay-php-client.git"
-    }
-  ],
   "type": "magento2-module",
   "version": "0.1.0",
   "minimum-stability": "alpha",
