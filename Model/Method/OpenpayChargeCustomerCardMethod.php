@@ -9,6 +9,7 @@
 namespace Degaray\Openpay\Model\Method;
 
 use Degaray\Openpay\Model\Customer\OpenpayCustomerRepositoryInterface;
+use Degaray\Openpay\Model\Product\Type\OpenpayRecharge;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -200,7 +201,13 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
         if (!parent::isAvailable($quote)) {
             return false;
         }
-        
+
+        foreach ($quote->getAllItems() as $item) {
+            if ($item->getProductType() !== OpenpayRecharge::TYPE_CODE) {
+                return false;
+            }
+        }
+
         $customer = $quote->getCustomer();
         $openpayCards = $customer->getExtensionAttributes()->getOpenpayCard();
 

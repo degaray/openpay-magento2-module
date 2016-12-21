@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Catalog:etc/product_types.xsd">
+    <type name="openpay_recharge" label="Openpay Recharge" modelInstance="Degaray\Openpay\Model\Product\Type\OpenpayRecharge" composite="false" isQty="true" canUseQtyDecimals="false" indexPriority="30" sortOrder="20">
+        <customAttributes>
+            <attribute name="is_real_product" value="false"/>
+            <attribute name="refundable" value="true"/>
+        </customAttributes>
+    </type>
+</config>
