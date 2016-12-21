@@ -8,6 +8,7 @@
 
 namespace Degaray\Openpay\Setup;
 
+use Degaray\Openpay\Model\Product\Type\OpenpayRecharge;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\Address;
 use Magento\Customer\Setup\CustomerSetup;
@@ -15,6 +16,7 @@ use Magento\Customer\Setup\CustomerSetupFactory;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\UpgradeDataInterface;
+use Magento\Eav\Setup\EavSetupFactory;
 
 class UpgradeData implements UpgradeDataInterface
 {
@@ -35,9 +37,22 @@ class UpgradeData implements UpgradeDataInterface
      */
     private $customerSetupFactory;
 
-    public function __construct(CustomerSetupFactory $customerSetupFactory)
-    {
+    /**
+     * @var EavSetupFactory
+     */
+    private $eavSetupFactory;
+
+    /**
+     * UpgradeData constructor.
+     * @param CustomerSetupFactory $customerSetupFactory
+     * @param EavSetupFactory $eavSetupFactory
+     */
+    public function __construct(
+        CustomerSetupFactory $customerSetupFactory,
+        EavSetupFactory $eavSetupFactory
+    ) {
         $this->customerSetupFactory = $customerSetupFactory;
+        $this->eavSetupFactory = $eavSetupFactory;
     }
 
     /**
@@ -67,6 +82,37 @@ class UpgradeData implements UpgradeDataInterface
             $customerSetup->getEavConfig()->getAttribute('customer', self::OPENPAY_CUSTOMER_ID_CUSTOM_ATTRIBUTE)
                 ->setData('used_in_forms', ['adminhtml_customer'])
                 ->save();
+        }
+
+        if (version_compare($dbVersion, '0.1.1', '<')) {
+            $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
+
+            $fieldList = [
+                'price',
+                'special_price',
+                'special_from_date',
+                'special_to_date',
+                'minimal_price',
+                'cost',
+                'tier_price',
+            ];
+
+            // make these attributes applicable to downloadable products
+            foreach ($fieldList as $field) {
+                $applyTo = explode(
+                    ',',
+                    $eavSetup->getAttribute(\Magento\Catalog\Model\Product::ENTITY, $field, 'apply_to')
+                );
+                if (!in_array(OpenpayRecharge::TYPE_CODE, $applyTo)) {
+                    $applyTo[] = OpenpayRecharge::TYPE_CODE;
+                    $eavSetup->updateAttribute(
+                        \Magento\Catalog\Model\Product::ENTITY,
+                        $field,
+                        'apply_to',
+                        implode(',', $applyTo)
+                    );
+                }
+            }
         }
     }
 }
