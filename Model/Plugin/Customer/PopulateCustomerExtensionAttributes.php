@@ -9,6 +9,8 @@ use Degaray\Openpay\Model\Customer\OpenpayCustomerRepositoryInterface;
 use Degaray\Openpay\Model\ResourceModel\Card\CollectionFactory as CardCollectionFactory;
 use Magento\Customer\Api\Data\CustomerExtensionFactory;
 use Magento\Customer\Model\Customer;
+use Magento\Framework\Exception\LocalizedException;
+use Openpay\Client\Type\OpenpayCustomerType;
 
 /**
  * Created by Xavier de Garay.
@@ -94,32 +96,30 @@ class PopulateCustomerExtensionAttributes
 
     /**
      * @param $customerDataObject
-     * @return CardInterface[]
+     * @return array
+     * @throws LocalizedException
      */
     protected function getCardsFromOpenpay($customerDataObject)
     {
         try {
             $cards = $this->cardRepository->getCardsByOpenpayCustomerId($customerDataObject);
         } catch (\Exception $e) {
-            $cards = [
-                'error' => __('Could not retrieve available cards from OpenPay for the given user')
-            ];
+            throw new LocalizedException(__('Could not retrieve available cards from OpenPay for the given user'));
         }
         return $cards;
     }
 
     /**
      * @param $customerDataObject
-     * @return array|\Openpay\Client\Type\OpenpayCustomerType
+     * @return OpenpayCustomerType
+     * @throws LocalizedException
      */
     protected function getCustomerFromOpenpay($customerDataObject)
     {
         try {
             $customer = $this->openpayCustomerRepository->get($customerDataObject);
         } catch (\Exception $e) {
-            $customer = [
-                'error' => __('Could not retrieve available customer from OpenPay for the given user')
-            ];
+            throw new LocalizedException(__('Could not retrieve available customer from OpenPay for the given user'));
         }
         return $customer;
     }
