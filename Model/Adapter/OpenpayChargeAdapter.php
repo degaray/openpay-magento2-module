@@ -15,6 +15,7 @@ use Openpay\Client\Adapter\OpenpayChargeAdapterInterface;
 use Openpay\Client\Adapter\OpenpayChargeAdapter as NonInjectableOpenpayChargeAdapter;
 use Openpay\Client\Mapper\OpenpayExceptionMapper;
 use Openpay\Client\Mapper\OpenpayTransactionMapper;
+use Openpay\Client\Validator\OpenpayChargeRefundValidator;
 use Openpay\Client\Validator\OpenpayChargeValidator;
 
 class OpenpayChargeAdapter extends NonInjectableOpenpayChargeAdapter implements OpenpayChargeAdapterInterface
@@ -24,6 +25,7 @@ class OpenpayChargeAdapter extends NonInjectableOpenpayChargeAdapter implements 
         OpenpayExceptionMapper $exceptionMapper,
         OpenpayChargeValidator $validator,
         OpenpayTransactionMapper $transactionMapper,
+        OpenpayChargeRefundValidator $openpayChargeRefundValidator,
         EncryptorInterface $encryptor,
         ScopeConfigInterface $config
     ) {
@@ -33,6 +35,6 @@ class OpenpayChargeAdapter extends NonInjectableOpenpayChargeAdapter implements 
         $paymentOpenpayConfig['apiKey'] = $encryptor->decrypt($paymentOpenpayConfig['apiKey']);
         $paymentOpenpayConfig['publicKey'] = $encryptor->decrypt($paymentOpenpayConfig['publicKey']);
         
-        parent::__construct($client, $exceptionMapper, $validator, $transactionMapper, $paymentOpenpayConfig);
+        parent::__construct($client, $exceptionMapper, $validator, $transactionMapper, $openpayChargeRefundValidator, $paymentOpenpayConfig);
     }
 }

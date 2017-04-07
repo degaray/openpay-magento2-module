@@ -18,6 +18,7 @@ use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\AbstractMethod;
 use Magento\Quote\Api\Data\CartInterface;
 use Openpay\Client\Adapter\OpenpayChargeAdapterInterface;
+use Openpay\Client\Adapter\OpenpayFeeAdapterInterface;
 use Openpay\Client\Exception\OpenpayException;
 
 class OpenpayChargeCustomerCardMethod extends AbstractMethod
@@ -54,8 +55,14 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
     protected $openpayCustomerRepository;
 
     /**
+     * @var OpenpayFeeAdapterInterface
+     */
+    protected $feeAdapter;
+
+    /**
      * OpenpayChargeCustomerCardMethod constructor.
      * @param OpenpayChargeAdapterInterface $chargeAdapter
+     * @param OpenpayFeeAdapterInterface $feeAdapter
      * @param ScopeConfigInterface $config
      * @param CustomerRepositoryInterface $customerRepository
      * @param OpenpayCustomerRepositoryInterface $openpayCustomerRepository
@@ -72,6 +79,7 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
      */
     public function __construct(
         OpenpayChargeAdapterInterface $chargeAdapter,
+        OpenpayFeeAdapterInterface $feeAdapter,
         ScopeConfigInterface $config,
         CustomerRepositoryInterface $customerRepository,
         OpenpayCustomerRepositoryInterface $openpayCustomerRepository,
@@ -87,6 +95,7 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
         array $data = []
     ) {
         $this->chargeAdapter = $chargeAdapter;
+        $this->feeAdapter = $feeAdapter;
         $this->config = $config;
         $this->customerRepository = $customerRepository;
         $this->openpayCustomerRepository = $openpayCustomerRepository;
@@ -103,11 +112,6 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
             $resourceCollection,
             $data
         );
-    }
-
-    public function validate()
-    {
-        parent::validate();
     }
 
     /**
@@ -157,6 +161,42 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
         }
 
         return $this;
+    }
+
+    public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    {
+        $paymentLeyend = __('Refund for: ') . __($this->getConfigData('paymentLeyend'))->getText();
+        $order = $payment->getOrder();
+        $customerId = $order->getCustomerId();
+        $customer = $this->customerRepository->getById($customerId);
+
+        $customerOpenpayId = $customer->getCustomAttribute('openpay_customer_id')->getValue();
+        $parentTransactionId = $payment->getParentTransactionId();
+
+        $refundParams = [
+            'amount' => $amount,
+            'description' => $paymentLeyend,
+        ];
+        
+        try {
+            $refundTransaction = $this->chargeAdapter->refundCustomerCard(
+                $customerOpenpayId,
+                $parentTransactionId,
+                $refundParams
+            );
+
+            $payment
+                ->setTransactionId($refundTransaction->getId())
+                ->setIsTransactionClosed(0);
+
+            $this->openpayCustomerRepository->clearCustomerCache($customerOpenpayId);
+        } catch (OpenpayException $e) {
+            $this->debugData(['request' => $refundParams, 'exception' => $e->getMessage()]);
+            $this->_logger->error(__('Payment capturing error.'));
+            throw new LocalizedException(__('[' . $e->getErrorCode() . ']' . $e->getMessage()));
+        }
+
+        return parent::refund($payment, $amount);
     }
 
     /**
@@ -238,5 +278,25 @@ class OpenpayChargeCustomerCardMethod extends AbstractMethod
         $currenciesAccepted = $this->getConfigData('currencies_accepted');
         $currenciesAcceptedArray = explode(',', $currenciesAccepted);
         return $currenciesAcceptedArray;
+    }
+
+    /**
+     * Retrieve information from payment FEE configuration
+     *
+     * @param string $field
+     * @param int|string|null|\Magento\Store\Model\Store $storeId
+     *
+     * @return mixed
+     */
+    public function getFeeConfigData($field, $storeId = null)
+    {
+        if ('order_place_redirect_url' === $field) {
+            return $this->getOrderPlaceRedirectUrl();
+        }
+        if (null === $storeId) {
+            $storeId = $this->getStore();
+        }
+        $path = 'payment/' . OpenpayChargeFeeMethod::METHOD_CODE . '/' . $field;
+        return $this->_scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 }

@@ -118,7 +118,6 @@ class OpenpayChargeFeeMethod extends AbstractMethod
             'order_id' => ($useOrderId) ? $orderId : null,
         ];
 
-
         try {
             $transaction = $this->feeAdapter->chargeFee($params);
 
